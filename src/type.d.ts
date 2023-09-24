@@ -7,5 +7,6 @@ declare module 'express' {
     user?: User
     decoded_authorization?: ITokenPayload
     decoded_refresh_token?: ITokenPayload
+    decoded_verify_email_token?: ITokenPayload
   }
 }

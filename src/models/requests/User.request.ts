@@ -17,3 +17,7 @@ export interface ITokenPayload extends JwtPayload {
 export interface IBodyLogout {
   refresh_token: string
 }
+
+export interface IBodyEmailVerifyToken {
+  email_verify_token: string
+}
