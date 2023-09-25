@@ -7,10 +7,10 @@ import {
 } from '~/controllers/user.controller'
 import {
   accessTokenValidator,
+  emailVerifyTokenValidator,
   loginValidator,
   refreshTokenValidator,
-  registerValidator,
-  emailVerifyTokenValidator
+  registerValidator
 } from '~/middlewares/user.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
 

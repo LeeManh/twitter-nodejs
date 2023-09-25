@@ -71,9 +71,7 @@ class UserService {
     const { accessToken, refreshToken } = await this.signTokens(user_id.toString())
 
     // save refresh token to database
-    await databaseService.refreshTokens.insertOne(
-      new RefreshToken({ token: refreshToken as string, user_id: new ObjectId(user_id) })
-    )
+    await databaseService.refreshTokens.insertOne(new RefreshToken({ token: refreshToken as string, user_id }))
 
     return {
       accessToken,

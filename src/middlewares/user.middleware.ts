@@ -1,4 +1,5 @@
 import { checkSchema } from 'express-validator'
+import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
@@ -137,9 +138,6 @@ export const accessTokenValidator = validate(
   checkSchema(
     {
       Authorization: {
-        // notEmpty: {
-        //   errorMessage: USER_MESSAGE.ACCESS_TOKEN_REQUIRED
-        // },
         trim: true,
         custom: {
           options: async (value, { req }) => {
@@ -172,7 +170,7 @@ export const accessTokenValidator = validate(
               }
 
               throw new ErrorWithStatus({
-                message: USER_MESSAGE.ACCESS_TOKEN_INVALID,
+                message: capitalize(error.message),
                 status: HTTP_STATUS.UNAUTHORIZED
               })
             }
@@ -190,9 +188,6 @@ export const refreshTokenValidator = validate(
   checkSchema(
     {
       refresh_token: {
-        // notEmpty: {
-        //   errorMessage: USER_MESSAGE.REFRESH_TOKEN_REQUIRED
-        // },
         trim: true,
         custom: {
           options: async (value, { req }) => {
@@ -228,15 +223,14 @@ export const refreshTokenValidator = validate(
 
               req.decoded_refresh_token = decoded_refresh_token
             } catch (error: any) {
-              if (error instanceof ErrorWithStatus) {
-                throw error
+              if (error instanceof JsonWebTokenError) {
+                throw new ErrorWithStatus({
+                  message: capitalize(error.message),
+                  status: HTTP_STATUS.UNAUTHORIZED
+                })
               }
 
-              // error validation refresh token
-              throw new ErrorWithStatus({
-                message: USER_MESSAGE.REFRESH_TOKEN_INVALID,
-                status: HTTP_STATUS.UNAUTHORIZED
-              })
+              throw error
             }
 
             return true
@@ -261,13 +255,18 @@ export const emailVerifyTokenValidator = validate(
                 status: HTTP_STATUS.UNAUTHORIZED
               })
             }
-
-            const decoded_verify_email_token = await verifyToken({
-              secretKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string,
-              token: value
-            })
-
-            req.decoded_verify_email_token = decoded_verify_email_token
+            try {
+              const decoded_email_verify_token = await verifyToken({
+                token: value,
+                secretKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
+              })
+              req.decoded_email_verify_token = decoded_email_verify_token
+            } catch (error: any) {
+              throw new ErrorWithStatus({
+                message: capitalize(error.message),
+                status: HTTP_STATUS.UNAUTHORIZED
+              })
+            }
 
             return true
           }

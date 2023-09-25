@@ -32,5 +32,6 @@ export const USER_MESSAGE = {
   REFRESH_TOKEN_NOT_MATCH: 'Refresh token does not match',
   EMAIL_VERIFY_TOKEN_REQUIRED: 'Email verify token is required',
   EMAIL_ALREADY_VERIFIED: 'Email already verified',
-  VERIFY_EMAIL_SUCCESSFUL: 'Verify email successful'
+  VERIFY_EMAIL_SUCCESSFUL: 'Verify email successful',
+  EMAIL_VERIFY_SUCCESSFUL: 'Email verify successful'
 } as const
